@@ -1,0 +1,39 @@
+<project name="stackoverflow-examples" basedir=".">
+
+  <presetdef name="compile" >
+    <javac srcdir="src"
+           debug="on"
+           encoding="utf-8"
+           deprecation="true"
+           includeantruntime="no"
+           >
+      <compilerarg value="-Xlint" />
+    </javac>
+  </presetdef>
+
+
+  <target name="compile.examples">
+    <mkdir dir="classes" />
+    <compile destdir="classes" >
+      <filename name="de/fencing_game/paul/examples/*" />
+    </compile>
+  </target>
+
+  <target name="test.example"
+	  description="tests compiled examples - give class name (without package) as -Dclass=..., command line parameters with -Dparams=..."
+	  depends="compile.examples">
+    <property name="params" value="" />
+    <java classpath="classes"
+	  fork="true"
+	  classname="de.fencing_game.paul.examples.${class}"
+	  taskname="example"
+	  >
+      <arg line="${params}" />
+      <assertions><enable/></assertions>
+    </java>
+  </target>
+
+  
+
+
+</project>
