@@ -1,4 +1,4 @@
-package de.fencing_game.test;
+package de.fencing_game.gui.basics;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -10,6 +10,8 @@ import java.awt.geom.*;
  *
  * This class is immutable as long as the underlying stroke is
  * immutable.
+ *
+ * (Mit englischen Kommentaren, weil für eine <a href="http://stackoverflow.com/questions/5046088/affinetransform-without-transforming-stroke">Antwort auf Stackoverflow</a> geschrieben.)
  */
 public class TransformedStroke
     implements Stroke

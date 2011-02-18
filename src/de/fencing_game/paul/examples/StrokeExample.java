@@ -1,4 +1,6 @@
-package de.fencing_game.test;
+package de.fencing_game.paul.examples;
+
+import de.fencing_game.gui.basics.TransformedStroke;
 
 import javax.swing.*;
 import java.awt.*;
