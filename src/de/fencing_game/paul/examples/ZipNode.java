@@ -11,7 +11,7 @@ import java.util.zip.*;
  * Created for <a href="http://stackoverflow.com/questions/5158961/unzip-into-treemap-in-java/5159346#5159346">Unzip into TreeMap in Java</a> on Stackoverflow.
  * @author Paŭlo Ebermann
  */
-public class ZipNode {
+public class ZipNode implements Node<ZipNode> {
 
     /** our parent node (null for the root node) 
      */
@@ -31,7 +31,7 @@ public class ZipNode {
 
     /**
      * creates a new ZipNode based on an ZipEntry in a ZipFile.
-     * This constructor is called from inside the 
+     * This constructor is called from inside the ZipFileReader.
      */
     private ZipNode(ZipFile f, ZipEntry entry) {
         this.file = f;
@@ -84,6 +84,22 @@ public class ZipNode {
     }
 
     /**
+     * returns true if this node is <strong>not</strong> a directory node.
+     */
+    public boolean isLeaf() {
+        return !directory;
+    }
+
+    /**
+     * returns an unmodifiable collection of all the child
+     * nodes of this node.
+     * @see #getChildrenMap
+     */
+    public Collection<ZipNode> getChildren() {
+        return getChildrenMap().values();
+    }
+
+    /**
      * returns this node's parent node (null, if this is the root node).
      */
     public ZipNode getParent() {
@@ -96,9 +112,10 @@ public class ZipNode {
      * (Names of subdirectories end with '/'.)
      * The map is empty if this node is not a directory node.
      */
-    public Map<String,ZipNode> getChildren() {
+    public Map<String,ZipNode> getChildrenMap() {
         return Collections.unmodifiableMap(children);
     }
+
 
     /**
      * opens an InputStream on this ZipNode. This only works when
@@ -260,7 +277,7 @@ public class ZipNode {
         String nextSelf = " ├─ ";
         String nextSub =  " │ ";
         Iterator<ZipNode> iterator =
-            this.getChildren().values().iterator();
+            this.getChildren().iterator();
         while(iterator.hasNext()) {
             ZipNode child = iterator.next();
             if(!iterator.hasNext() ) {
