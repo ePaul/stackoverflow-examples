@@ -6,6 +6,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 
+
+/**
+ * Example program showing the Stroke distortion when using
+ * scaling of the graphics, and how to avoid it by using my
+ * {@link TransformedStroke}.
+ *
+ *<p>
+ * <img src="doc-files/distorted-stroke.png" alt=""/>
+ * <img src="doc-files/undistorted-stroke.png" alt="" />
+ *</p>
+ * @author Paŭlo Ebermann
+ */
 public class StrokeExample extends JPanel {
   
     private boolean transformed;
