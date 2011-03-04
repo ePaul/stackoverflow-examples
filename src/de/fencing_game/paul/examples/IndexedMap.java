@@ -6,17 +6,22 @@ import java.util.*;
 /**
  * A map which additionally to key-based access allows index-based access
  * to keys and values.
+ * <p>
+ * Inspired by the question <a href="http://stackoverflow.com/questions/5192706/java-is-there-a-container-which-effectively-combines-hashmap-and-arraylist">Is there a container which effectively combines HashMap and ArrayList?</a> on Stackoverflow.
+ * </p>
+ * @author Paŭlo Ebermann
+ * @see ArrayHashMap
  */
 public interface IndexedMap<K,V>
     extends Map<K,V>
 {
 
     /**
-     * returns a list view of the {@link #entrySet}.
+     * returns a list view of the {@link #entrySet} of this Map.
      *
      * This list view supports removal of entries, if the map is mutable.
      *
-     * It may also support addition of new entries per the
+     * It may also support indexed addition of new entries per the
      *  {@link List#add add} method - but this throws an
      *  {@link IllegalArgumentException} if the key is already used.
      */
