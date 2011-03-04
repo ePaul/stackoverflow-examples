@@ -1,0 +1,7 @@
+# example input file for bash+sed-regex.sh and bash-only-regex.sh.
+# see http://stackoverflow.com/questions/5096925/in-gnu-grep-or-another-standard-bash-command-is-it-possible-to-get-a-resultset-f
+# (non-matching lines are ignored.)
+
+npviewer. 17875          j   11u      REG                8,8 59737848     524264 /tmp/FlashXXu8pvMg (deleted)
+bdbgdfa
+npviewer. 17875          j   17u      REG                8,8 16037387     524273 /tmp/FlashXXIBH29F (deleted)
