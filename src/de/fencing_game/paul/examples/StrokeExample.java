@@ -19,6 +19,8 @@ import java.awt.geom.*;
  * @author Paŭlo Ebermann
  */
 public class StrokeExample extends JPanel {
+
+    private static final long serialVersionUID = 1;
   
     private boolean transformed;
 
