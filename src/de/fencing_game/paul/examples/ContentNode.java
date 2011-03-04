@@ -15,6 +15,6 @@ public interface ContentNode<C,N extends ContentNode<C,N>>
    /**
     * returns the content of this node, if any.
     */
-   public C content();
+   public C getContent();
 
 }

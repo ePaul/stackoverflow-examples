@@ -16,7 +16,14 @@ import java.util.Collection;
 public interface Node<N extends Node<N>> {
 
    /**
-    * equivalent to {@link #children children()}.{@link Collection#isEmpty isEmpty()}.
+    * Returns true, if this node is a leaf node.
+    *
+    * What exactly constitutes a lead node, is type specific, but certainly a
+    * leaf node has no children (i.e.
+    * {@link #children children()}.{@link Collection#isEmpty isEmpty()}
+    * returns {@code true}). Some node types mean by
+    * leaf nodes only nodes who never can have any children.
+    *
     * @returns true, if this is a leaf node, else false.
     */
    public boolean isLeaf();
@@ -25,10 +32,11 @@ public interface Node<N extends Node<N>> {
     * returns a collection of all children of this node.
     * This collection can be changed, if this node is mutable.
     */
-   public Collection<N> children();
+   public Collection<N> getChildren();
+
    /**
     * returns the parent of this node.
     * @return null, if this is the root node, or the node does not know its parent, or has multiple parents.
     */
-   public N parent();
+   public N getParent();
 }
