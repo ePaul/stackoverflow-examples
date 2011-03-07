@@ -5,3 +5,6 @@ classes/
 
 # backup copies by the editor
 *~
+
+# Created by emacs/JDEE/Semantic for quicker navigation.
+semantic.cache
