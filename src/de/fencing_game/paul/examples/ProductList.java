@@ -154,18 +154,17 @@ public class ProductList<X>
      * a test method which creates a list of lists and
      * shows the cartesian product of this.
      */
-    public static void main(String[] params) {
-
-        @SuppressWarnings("unchecked")
-        List<List<Integer>> factors =
-            Arrays.asList(Arrays.asList(1,2),
-                          Arrays.asList(10,20,30, 20),
-                          Arrays.asList(100));
+    public static void main(String[] params)
+    {
+        List<List<?>> factors =
+            Arrays.<List<?>>asList(Arrays.asList(1,2),
+                                   Arrays.asList(10,20,30, 20),
+                                   Arrays.asList(100));
         System.out.println("factors: " + factors);
-        List<List<Integer>> product =
-            new ProductList<Integer>(factors);
+        List<List<Object>> product =
+            new ProductList<Object>(factors);
         System.out.println("product: " + product);
-        List<Integer> example = Arrays.asList(2,20,100);
+        List<?> example = Arrays.asList(2,20,100);
         System.out.println("indexOf(" + example +") = " +
                            product.indexOf(example));
         System.out.println("lastIndexOf(" + example +") = " +

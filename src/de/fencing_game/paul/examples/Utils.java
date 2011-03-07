@@ -1,7 +1,6 @@
 package de.fencing_game.paul.examples;
 
-import java.util.List;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * A collection of static utility methods for other classes.
@@ -27,6 +26,18 @@ public class Utils {
     }
 
 
-
+    /**
+     * converts an Iterable into a list. This method works
+     * non-lazily, iterating once over the iterable and adding
+     * all its elements into a new ArrayList.
+     */
+    public static <T> List<T> asList(Iterable<? extends T> iterable) {
+        ArrayList<T> result = new ArrayList<T>();
+        for(T t : iterable) {
+            result.add(t);
+        }
+        result.trimToSize();
+        return result;
+    }
 
 }

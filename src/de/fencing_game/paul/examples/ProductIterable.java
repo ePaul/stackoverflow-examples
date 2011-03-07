@@ -217,22 +217,17 @@ public class ProductIterable<X>
      * a test method which creates a list of lists and
      * from this the cartesian product.
      */
-    public static void main(String[] params) {
+    public static void main(String[] params)
+    {
+        List<List<?>> factors =
+            Arrays.<List<?>>asList(Arrays.asList(1,2),
+                                   Arrays.asList(10,20,30, 20),
+                                   Arrays.asList(100));
+        System.out.println("factors: " + factors);
+        Iterable<List<Object>> product =
+            new ProductIterable<Object>(factors);
 
-        @SuppressWarnings("unchecked")
-        List<List<Integer>> factors =
-            Arrays.asList(Arrays.asList(1,2),
-                          Arrays.asList(10,20,30),
-                          Arrays.asList(100));
-        Iterable<List<Integer>> product =
-            new ProductIterable<Integer>(factors);
-        List<List<Integer>> productList =
-            new ArrayList<List<Integer>>();
-        for(List<Integer> pEl : product) {
-            productList.add(pEl);
-            System.out.println(pEl);
-        }
-        System.out.println(productList);
+        System.out.println("product: " + Utils.asList(product));
     }
 
 }
