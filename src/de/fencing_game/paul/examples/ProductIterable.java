@@ -27,14 +27,36 @@ public class ProductIterable<X>
 
     private Iterable<? extends Iterable<? extends X>> factors;
 
+    /**
+     * creates a new ProductIterable based on a iterable of iterables.
+     */
     public ProductIterable(Iterable<? extends Iterable<? extends X>> factors) {
         this.factors = factors;
     }
 
+
+    /**
+     * returns an iterator over the elements of the
+     * cartesian product.
+     *<p>
+     * The lists returned by this iterator are fixed-size, i.e. support
+     * no add/remove. Using {@link List#set set} is possible, but does
+     *  not effect this ProductIterable.
+     *</p>
+     *<p>
+     * The iterator takes a snapshot of the Iterable given to the
+     * constructor in the moment this method is called, the individual
+     * iterables' iterators are still called semi-lazily (i.e.
+     * maximally one element ahead) when needed.
+     *</p>
+     */
     public Iterator<List<X>> iterator() {
         return new ProductIterator();
     }
 
+    /**
+     * the class implementing our iterator.
+     */
     private class ProductIterator
         implements Iterator<List<X>>
     {
@@ -171,10 +193,11 @@ public class ProductIterable<X>
          * creates a list from the StackElements in reverse order.
          */
         private List<X> makeList() {
-            List<X> list = new ArrayList<X>(stack.size());
-            // TODO: more efficient reverse copying
+            List<X> list = Utils.createFixedList(stack.size());
+            int index = stack.size();
             for(StackElement se : stack) {
-                list.add(0, se.item);
+                index --;
+                list.set(index, se.item);
             }
             return list;
         }

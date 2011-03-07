@@ -73,25 +73,22 @@ public class ProductList<X>
     public List<X> get(int index) {
         if(index < 0)
             throw new IndexOutOfBoundsException("index " + index+ " < 0");
-        // we can't create a generic X[], so we take an Object[]
-        // here and wrap it later in Arrays.asList().
-        Object[] array = new Object[factors.size()];
+
+        List<X> result = Utils.createFixedList(factors.size());
 
         // we iteratively lookup the components, using
         // modulo and division to calculate the right
         // indexes.
         for(int i = factors.size() - 1; i >= 0; i--) {
-            List<?> subList = factors.get(i);
+            List<? extends X> subList = factors.get(i);
             int subIndex = index % subList.size();
-            array[i] = subList.get(subIndex);
+            result.set(i, subList.get(subIndex));
             index = index / subList.size();
         }
         if(index > 0)
             throw new IndexOutOfBoundsException("too large index");
 
-        @SuppressWarnings("unchecked")
-        List<X> list = (List<X>)Arrays.asList(array);
-        return list;
+        return result;
     }
 
     /**
