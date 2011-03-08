@@ -6,7 +6,7 @@ package de.fencing_game.paul.examples.gc;
  * active use (e.g. on the stack of some running thread). It also
  * allows to "stop the world" while querying.
  */
-public interface RootList implements Iterable<MemoryCell>
+public interface RootList extends Iterable<MemoryCell>
 {
 
     
