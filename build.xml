@@ -11,6 +11,14 @@
     </javac>
   </presetdef>
 
+  <target name="compile.gc">
+    <mkdir dir="classes" />
+    <compile destdir="classes" >
+      <filename name="de/fencing_game/paul/examples/gc/*" />
+    </compile>
+  </target>
+
+
 
   <target name="compile.examples">
     <mkdir dir="classes" />
