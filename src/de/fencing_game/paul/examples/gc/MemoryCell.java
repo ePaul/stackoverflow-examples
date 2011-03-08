@@ -35,21 +35,27 @@ public class MemoryCell {
         this.position = pos;
     }
 
+    /**
+     * clears the contents of this memory cell, setting everything
+     * to null references.
+     */
     public void clear() {
         Arrays.fill(data, 0, data.length, 0);
     }
 
     /**
-     * returns the number of references in this memory cell.
+     * returns the number of references or other
+     * data entries in this memory cell.
      */
     public int size() {
-        return data.size;
+        return data.length;
     }
 
     /**
      * returns the value of the reference with given index.
      */
     public int getReference(int index) {
+        assert data[index] >= 0;
         return data[index];
     }
 
