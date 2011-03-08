@@ -29,8 +29,9 @@ public interface Environment {
 
     /**
      * changes some primitive data in a object.
+     * The value should be negative.
      */
-    public void setData(MemoryCell object, int index, int value);
+    public void setData(int object, int index, int value);
 
     /**
      * releases a memory cell, when it is not used
@@ -46,7 +47,7 @@ public interface Environment {
      * positive arguments must be objects referenced by local variables,
      * negative arguments are interpreted as primitive values.
      */
-    public void callMethod(UserMethod m, int ... arguments);
+    public int callMethod(UserMethod m, int ... arguments);
 
 
 }
