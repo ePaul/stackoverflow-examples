@@ -74,6 +74,23 @@ public class MemoryCell {
         data[index] = value;
     }
 
+
+    /**
+     * only to be called by the VM.
+     */
+    int getData(int index) {
+        assert data[index] < 0;
+        return data[index];
+    }
+
+    /**
+     * only to be called by the VM.
+     */
+    void setData(int index, int value) {
+        assert value <= 0;
+        data[index] = value;
+    }
+
     /**
      * copies the content of this object to another memory cell.
      * The other cell must have the same size as this cell.
