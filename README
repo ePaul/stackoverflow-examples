@@ -5,5 +5,19 @@ answers for questions on stackoverflow.com.
 Here is my user page:
    http://stackoverflow.com/users/600500/palo-ebermann
 
+------------
 
+The branch gc-experiment contains a start of a 
+implementation of a very simplyfied version of
+the Java VM, which supports only one type of
+object, references to those objects, and a
+31-bit primitive type.
 
+The idea is to test garbage collection algorithms
+in this simplyfied model.
+
+It is not yet ready, but work in progress.
+
+It was inspired by this question on Stackoverflow:
+
+http://stackoverflow.com/questions/5236073/implement-an-explecit-garbage-collection-algorithm-in-java/
