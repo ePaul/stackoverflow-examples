@@ -11,6 +11,41 @@
     </javac>
   </presetdef>
 
+  <path id="tools.jar">
+    <pathelement location="${java.home}/../lib/tools.jar" />
+  </path>
+
+
+  <target name="compile.doclet"
+          description="compiles the doccheck-doclet."
+          >
+    <mkdir dir="classes" />
+    <compile destdir="classes"
+             classpathref="tools.jar"
+             >
+      <filename name="de/fencing_game/paul/examples/doclet/*" />
+    </compile>
+  </target>
+
+  <target name="doccheck.doclet"
+          depends="compile.doclet"
+          description="runs the doccheck-doclet on itself."
+          >
+    <javadoc encoding="UTF-8"
+             classpathref="tools.jar"
+             access="private"
+             failonerror="true"
+             >
+      <fileset dir="src">
+        <include name="de/fencing_game/paul/examples/doclet/*" />
+      </fileset>
+      <doclet name="de.fencing_game.paul.examples.doclet.CheckingDoclet"
+              path="./classes">
+      </doclet>
+    </javadoc>
+  </target>
+
+
 
   <target name="compile.examples">
     <mkdir dir="classes" />
