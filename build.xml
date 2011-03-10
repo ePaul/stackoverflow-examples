@@ -15,6 +15,10 @@
     <pathelement location="${java.home}/../lib/tools.jar" />
   </path>
 
+  <target name="properties">
+    <echoproperties/>
+  </target>
+
 
   <target name="compile.doclet"
           description="compiles the doccheck-doclet."
