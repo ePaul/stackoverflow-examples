@@ -15,7 +15,25 @@
     <pathelement location="${java.home}/../lib/tools.jar" />
   </path>
 
-  <target name="properties">
+
+  <target name="echoproperties.prepare">
+    <available property="echoproperties.works"
+               classname="org.apache.tools.ant.taskdefs.optional.EchoProperties"
+               />
+  </target>
+
+  <target name="echoproperties.init"
+          depends="echoproperties.prepare"
+          unless="echoproperties.works">
+    <taskdef name="echoproperties"
+             classname="org.apache.tools.ant.taskdefs.optional.EchoProperties"
+             classpath="${java.class.path}" />
+  </target>
+
+
+  <target name="properties"
+          depends="echoproperties.init"
+          >
     <echoproperties/>
   </target>
 
@@ -71,8 +89,5 @@
       <assertions><enable/></assertions>
     </java>
   </target>
-
-  
-
 
 </project>
