@@ -66,13 +66,18 @@ public class DecimalBigInt {
         return new DecimalBigInt(digits);
     }
 
+    /**
+     * formats the number as a decimal String.
+     */
     public String toDecimalString() {
-        Formatter f = new Formatter();
+        StringBuilder b =
+            new StringBuilder(BASE_DECIMAL_DIGITS * digits.length);
+        Formatter f = new Formatter(b);
         f.format("%d", digits[0]);
         for(int i = 1 ; i < digits.length; i++) {
             f.format("%09d", digits[i]);
         }
-        return f.toString();
+        return b.toString();
     }
 
 
@@ -80,11 +85,13 @@ public class DecimalBigInt {
         // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
         System.out.println(d);
-        System.out.println(d.toDecimalString());
 
         // test of valueOf
         DecimalBigInt d2 = DecimalBigInt.valueOf("12345678901234567890");
         System.out.println(d2);
+
+        // test of toDecimalString
+        System.out.println(d.toDecimalString());
         System.out.println(d2.toDecimalString());
     }
 
