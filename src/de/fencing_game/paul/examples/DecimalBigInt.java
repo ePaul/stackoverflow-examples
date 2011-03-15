@@ -53,16 +53,13 @@ public class DecimalBigInt {
     public static DecimalBigInt valueOf(String decimal) {
         int decLen = decimal.length();
         int bigLen = (decLen-1) / BASE_DECIMAL_DIGITS + 1;
-        System.err.println("decLen: " + decLen + ", bigLen: " + bigLen);
         // length of first block
         int firstSome = decLen - (bigLen-1) * BASE_DECIMAL_DIGITS;
-        System.err.println("firstSome: " + firstSome);
         int[] digits = new int[bigLen];
         for(int i = 0; i < bigLen ; i++) {
             String block =
                 decimal.substring(Math.max(firstSome + (i-1)*BASE_DECIMAL_DIGITS, 0),
                                   firstSome +   i  *BASE_DECIMAL_DIGITS);
-            System.err.println("block["+i+"]: " + block);
             digits[i] = Integer.parseInt(block);
         }
         return new DecimalBigInt(digits);
