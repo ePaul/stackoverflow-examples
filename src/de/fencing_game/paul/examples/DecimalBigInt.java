@@ -43,12 +43,40 @@ public class DecimalBigInt {
     }
 
 
+    /**
+     * creates a DecimalBigInt from a decimal representation.
+     * @param decimal a string of decimal digits.
+     * @throws NumberFormatException if the number is not in
+     *     correct decimal format, e.g. if it contains any characters
+     *     outside of 0..9.
+     */
+    public static DecimalBigInt valueOf(String decimal) {
+        int decLen = decimal.length();
+        int bigLen = (decLen-1) / BASE_DECIMAL_DIGITS + 1;
+        System.err.println("decLen: " + decLen + ", bigLen: " + bigLen);
+        // length of first block
+        int firstSome = decLen - (bigLen-1) * BASE_DECIMAL_DIGITS;
+        System.err.println("firstSome: " + firstSome);
+        int[] digits = new int[bigLen];
+        for(int i = 0; i < bigLen ; i++) {
+            String block =
+                decimal.substring(Math.max(firstSome + (i-1)*BASE_DECIMAL_DIGITS, 0),
+                                  firstSome +   i  *BASE_DECIMAL_DIGITS);
+            System.err.println("block["+i+"]: " + block);
+            digits[i] = Integer.parseInt(block);
+        }
+        return new DecimalBigInt(digits);
+    }
 
 
     public static void main(String[] params) {
+        // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
         System.out.println(d);
 
+        // test of valueOf
+        DecimalBigInt d2 = DecimalBigInt.valueOf("12345678901234567890");
+        System.out.println(d2);
     }
 
 
