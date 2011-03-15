@@ -1,6 +1,7 @@
 package de.fencing_game.paul.examples;
 
 import java.util.Arrays;
+import java.util.Formatter;
 
 
 public class DecimalBigInt {
@@ -65,15 +66,25 @@ public class DecimalBigInt {
         return new DecimalBigInt(digits);
     }
 
+    public String toDecimalString() {
+        Formatter f = new Formatter();
+        for(int digit : digits) {
+            f.format("%09d", digit);
+        }
+        return f.toString();
+    }
+
 
     public static void main(String[] params) {
         // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
         System.out.println(d);
+        System.out.println(d.toDecimalString());
 
         // test of valueOf
         DecimalBigInt d2 = DecimalBigInt.valueOf("12345678901234567890");
         System.out.println(d2);
+        System.out.println(d2.toDecimalString());
     }
 
 
