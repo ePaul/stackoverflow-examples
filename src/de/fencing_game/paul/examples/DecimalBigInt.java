@@ -182,7 +182,7 @@ public class DecimalBigInt
      */
     public int hashCode() {
         int hash = 0;
-        for(int i = 0; i < digits.length; i++) {
+        for(int digit : digits) {
             hash = hash * 13 + digit;
         }
         return hash;
