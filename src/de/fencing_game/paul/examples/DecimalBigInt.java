@@ -177,6 +177,28 @@ public class DecimalBigInt
         return new DecimalBigInt(result);
     }
 
+    /**
+     * calculates a hashCode for this object.
+     */
+    public int hashCode() {
+        int hash = 0;
+        for(int i = 0; i < digits.length; i++) {
+            hash = hash * 13 + digit;
+        }
+        return hash;
+    }
+
+    /**
+     * compares this object with another object for equality.
+     * A DecimalBigInt is equal to another object only if this other
+     * object is also a DecimalBigInt and both represent the same
+     * natural number.
+     */
+    public boolean equals(Object o) {
+        return o instanceof DecimalBigInt &&
+            this.compareTo((DecimalBigInt)o) == 0;
+    }
+
 
     /**
      * compares this {@link DecimalBigInt} to another one.
