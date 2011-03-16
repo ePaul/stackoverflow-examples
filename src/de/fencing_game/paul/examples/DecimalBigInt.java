@@ -82,7 +82,7 @@ public class DecimalBigInt {
 
 
     /**
-     * calculates the sum of this and that.
+     * calculates the sum {@code this + that}.
      */
     public DecimalBigInt plus(DecimalBigInt that) {
         int[] result = new int[Math.max(this.digits.length,
@@ -91,7 +91,7 @@ public class DecimalBigInt {
         addDigits(result, result.length-1, this.digits);
         addDigits(result, result.length-1, that.digits);
 
-        // cut of leading zero, if any
+        // cut off leading zero, if any
         if(result[0] == 0) {
             result = Arrays.copyOfRange(result, 1, result.length);
         }
@@ -102,7 +102,7 @@ public class DecimalBigInt {
      * adds all the digits from the addend array to the result array.
      */
     private void addDigits(int[] result, int resultIndex,
-                           int[] addend)
+                           int... addend)
     {
         int addendIndex = addend.length - 1;
         while(addendIndex >= 0) {
@@ -132,6 +132,50 @@ public class DecimalBigInt {
     }
 
 
+    /**
+     * multiplies two digits and adds the product to the result array
+     * at the right digit-position.
+     */
+    private void multiplyDigit(int[] result, int resultIndex,
+                               int firstFactor, int secondFactor) {
+        long prod = (long)firstFactor * (long)secondFactor;
+        int prodDigit = (int)(prod % BASE);
+        int carry = (int)(prod / BASE);
+        addDigits(result, resultIndex, carry, prodDigit);
+    }
+
+
+    /**
+     * multiplies all digits of two factors and adds them to the result.
+     */
+    private void multiplyDigits(int[] result, int resultIndex,
+                                int[] leftFactor, int[] rightFactor) {
+        for(int i = 0; i < leftFactor.length; i++) {
+            for(int j = 0; j < rightFactor.length; j++) {
+
+                multiplyDigit(result, resultIndex - (i + j),
+                              leftFactor[leftFactor.length-i-1],
+                              rightFactor[rightFactor.length-j-1]);
+            }
+        }
+    }
+
+    /**
+     * returns the product {@code this × that}.
+     */
+    public DecimalBigInt times(DecimalBigInt that) {
+        int[] result = new int[this.digits.length + that.digits.length];
+        multiplyDigits(result, result.length-1, 
+                       this.digits, that.digits);
+
+        // cut off leading zero, if any
+        if(result[0] == 0) {
+            result = Arrays.copyOfRange(result, 1, result.length);
+        }
+        return new DecimalBigInt(result);
+    }
+
+
     public static void main(String[] params) {
         // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
@@ -145,8 +189,13 @@ public class DecimalBigInt {
         System.out.println(d.toDecimalString());
         System.out.println(d2.toDecimalString());
 
+        // test of plus
         DecimalBigInt sum = d2.plus(d2).plus(d2); 
         System.out.println("sum: " + sum);
+
+        // test of times:
+        DecimalBigInt prod = d2.times(d2);
+        System.out.println("prod: " + prod);
     }
 
 
