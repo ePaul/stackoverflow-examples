@@ -225,6 +225,19 @@ public class DecimalBigInt
     }
 
 
+    /**
+     * calculates the faculty of an int number.
+     * This uses a simple iterative loop.
+     */
+    public static DecimalBigInt faculty(int n) {
+        DecimalBigInt fac = new DecimalBigInt(1);
+        for(int i = 2; i <= n; i++) {
+            fac = fac.times(new DecimalBigInt(i));
+        }
+        return fac;
+    }
+
+
     public static void main(String[] params) {
         // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
@@ -251,6 +264,9 @@ public class DecimalBigInt
         System.out.println("sum <=> d: " + sum.compareTo(d));
         System.out.println("prod <=> d: " + prod.compareTo(d));
         System.out.println("d <=> prod: " + d.compareTo(prod));
+
+        DecimalBigInt fac = DecimalBigInt.faculty(90);
+        System.out.println("fac(90) = " + fac.toDecimalString());
     }
 
 
