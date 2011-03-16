@@ -81,6 +81,57 @@ public class DecimalBigInt {
     }
 
 
+    /**
+     * calculates the sum of this and that.
+     */
+    public DecimalBigInt plus(DecimalBigInt that) {
+        int[] result = new int[Math.max(this.digits.length,
+                                        that.digits.length)+ 1];
+
+        addDigits(result, result.length-1, this.digits);
+        addDigits(result, result.length-1, that.digits);
+
+        // cut of leading zero, if any
+        if(result[0] == 0) {
+            result = Arrays.copyOfRange(result, 1, result.length);
+        }
+        return new DecimalBigInt(result);
+    }
+
+    /**
+     * adds all the digits from the addend array to the result array.
+     */
+    private void addDigits(int[] result, int resultIndex,
+                           int[] addend)
+    {
+        int addendIndex = addend.length - 1;
+        while(addendIndex >= 0) {
+            addDigit(result, resultIndex,
+                     addend[addendIndex]);
+            addendIndex--;
+            resultIndex--;
+        }
+    }
+
+
+    /**
+     * adds one digit from the addend to the corresponding digit
+     * of the result.
+     * If there is carry, it is recursively added to the next digit
+     * of the result.
+     */
+    private void addDigit(int[] result, int resultIndex,
+                          int addendDigit)
+    {
+        int sum = result[resultIndex] + addendDigit;
+        result[resultIndex] = sum % BASE;
+        int carry = sum / BASE;
+        if(carry > 0) {
+            addDigit(result, resultIndex - 1, carry);
+        }
+    }
+
+
     public static void main(String[] params) {
         // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
@@ -93,6 +144,9 @@ public class DecimalBigInt {
         // test of toDecimalString
         System.out.println(d.toDecimalString());
         System.out.println(d2.toDecimalString());
+
+        DecimalBigInt sum = d2.plus(d2).plus(d2); 
+        System.out.println("sum: " + sum);
     }
 
 
