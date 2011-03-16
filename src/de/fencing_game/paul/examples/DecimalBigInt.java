@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.Formatter;
 
 
-public class DecimalBigInt {
+public class DecimalBigInt
+    implements Comparable<DecimalBigInt>
+{
 
 
     public final static int BASE = 1000000000;
@@ -176,18 +178,43 @@ public class DecimalBigInt {
     }
 
 
+    /**
+     * compares this {@link DecimalBigInt} to another one.
+     * @return -1 if this < that, 0 if this == that and 1 if this > that.
+     */
+    public int compareTo(DecimalBigInt that) {
+        if(this.digits.length < that.digits.length) {
+            return -1;
+        }
+        if (that.digits.length < this.digits.length) {
+            return 1;
+        }
+
+        for(int i = 0; i < this.digits.length; i++) {
+            if(this.digits[i] < that.digits[i]) {
+                return -1;
+            }
+            if(that.digits[i] < this.digits[i]) {
+                return 1;
+            }
+        }
+        
+        return 0;
+    }
+
+
     public static void main(String[] params) {
         // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
-        System.out.println(d);
+        System.out.println("d: " + d);
 
         // test of valueOf
         DecimalBigInt d2 = DecimalBigInt.valueOf("12345678901234567890");
-        System.out.println(d2);
+        System.out.println("d2: " +d2);
 
         // test of toDecimalString
-        System.out.println(d.toDecimalString());
-        System.out.println(d2.toDecimalString());
+        System.out.println("d: " + d.toDecimalString());
+        System.out.println("d2: " + d2.toDecimalString());
 
         // test of plus
         DecimalBigInt sum = d2.plus(d2).plus(d2); 
@@ -196,6 +223,12 @@ public class DecimalBigInt {
         // test of times:
         DecimalBigInt prod = d2.times(d2);
         System.out.println("prod: " + prod);
+
+        System.out.println("d2 <=> d: " + d2.compareTo(d));
+        System.out.println("d <=> d2: " + d.compareTo(d2));
+        System.out.println("sum <=> d: " + sum.compareTo(d));
+        System.out.println("prod <=> d: " + prod.compareTo(d));
+        System.out.println("d <=> prod: " + d.compareTo(prod));
     }
 
 
