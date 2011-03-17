@@ -249,11 +249,20 @@ public class DecimalBigInt
     /**
      * calculates the faculty of an int number.
      * This uses a simple iterative loop.
+     *
+     * Each 1000 factors we print the current digit count
+     * (in our internal radix) to the standard error stream.
+     * @param n should be < BASE (but you supposedly don't want to
+     *  use bigger number anyway, as it takes years).
      */
     public static DecimalBigInt faculty(int n) {
         DecimalBigInt fac = new DecimalBigInt(1);
         for(int i = 2; i <= n; i++) {
             fac = fac.times(new DecimalBigInt(i));
+            if(i % 1000 == 0) {
+                System.err.println("log_BASE(fac("+i+")) = " +
+                                   fac.digits.length);
+            }
         }
         return fac;
     }
@@ -289,8 +298,11 @@ public class DecimalBigInt
         System.out.println("prod <=> d: " + prod.compareTo(d));
         System.out.println("d <=> prod: " + d.compareTo(prod));
 
-        DecimalBigInt fac = DecimalBigInt.faculty(90);
-        System.out.println("fac(90) = " + fac.toDecimalString());
+        // The result should need 3999999 decimal digits. This
+        // is the biggest faculty which Emacs calc can calculate
+        // (in floating point mode):
+        DecimalBigInt fac = DecimalBigInt.faculty(736275);
+        System.out.println("fac(736275) = " + fac.toDecimalString());
     }
 
 
