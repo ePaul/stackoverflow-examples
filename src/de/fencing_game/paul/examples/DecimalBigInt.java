@@ -7,14 +7,16 @@ import java.util.Formatter;
  * A big-number class for natural numbers (i.e. nonnegative),
  * which uses a decimal-based format (instead of a binary based
  * one like the {@link java.math.BigInteger}).
- *
- * The numbers are stored in a positional notation with base 1000000000 (10⁹).
- *
+ * <p>
+ * The numbers are stored in a positional notation with base 1000000000 (10⁹),
+ * which supports easier conversion from/to decimal.
+ * </p><p>
  * Until now we only have addition and multiplication, no subtraction
  * or division.
- *
+ * </p><p>
  * See my answer <a href="http://stackoverflow.com/questions/5318068/very-large-numbers-in-java-without-using-java-math-biginteger/5318896#5318896">Creating a simple Big number class in Java</a>
  * on Stackoverflow for details on how it is done.
+ * </p>
  * @author Paŭlo Ebermann
  */
 public class DecimalBigInt
