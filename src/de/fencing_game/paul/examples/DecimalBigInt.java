@@ -3,19 +3,40 @@ package de.fencing_game.paul.examples;
 import java.util.Arrays;
 import java.util.Formatter;
 
-
+/**
+ * A big-number class for natural numbers (i.e. nonnegative),
+ * which uses a decimal-based format (instead of a binary based
+ * one like the {@link java.math.BigInteger}).
+ *
+ * The numbers are stored in a positional notation with base 1000000000 (10⁹).
+ *
+ * Until now we only have addition and multiplication, no subtraction
+ * or division.
+ *
+ * See my answer <a href="http://stackoverflow.com/questions/5318068/very-large-numbers-in-java-without-using-java-math-biginteger/5318896#5318896">Creating a simple Big number class in Java</a>
+ * on Stackoverflow for details on how it is done.
+ * @author Paŭlo Ebermann
+ */
 public class DecimalBigInt
     implements Comparable<DecimalBigInt>
 {
 
-
+    /**
+     * The base (radix) of our positional system.
+     */
     public final static int BASE = 1000000000;
 
+    /**
+     * The number of decimal digits fitting in one digit
+     * of our system.
+     */
     private final static int BASE_DECIMAL_DIGITS = 9;
 
 
     /**
      * big-endian representation of the digits.
+     * Little-endian would have been smarter, but
+     * now I don't want to change it everywhere.
      */
     private int[] digits;
 
@@ -211,7 +232,7 @@ public class DecimalBigInt
         if (that.digits.length < this.digits.length) {
             return 1;
         }
-
+        // same length, compare the digits
         for(int i = 0; i < this.digits.length; i++) {
             if(this.digits[i] < that.digits[i]) {
                 return -1;
@@ -220,7 +241,7 @@ public class DecimalBigInt
                 return 1;
             }
         }
-        
+        // same digits
         return 0;
     }
 
@@ -238,6 +259,9 @@ public class DecimalBigInt
     }
 
 
+    /**
+     * a test method, which demonstrates the usage.
+     */
     public static void main(String[] params) {
         // test of constructor + toString
         DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
