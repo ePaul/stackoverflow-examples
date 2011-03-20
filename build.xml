@@ -15,7 +15,6 @@
     <pathelement location="${java.home}/../lib/tools.jar" />
   </path>
 
-
   <target name="echoproperties.prepare">
     <available property="echoproperties.works"
                classname="org.apache.tools.ant.taskdefs.optional.EchoProperties"
@@ -65,6 +64,31 @@
               path="./classes">
       </doclet>
     </javadoc>
+  </target>
+
+  <target name="compile.accessor">
+    <mkdir dir="classes.acc" />
+    <compile destdir="classes.acc" >
+      <filename name="de/fencing_game/paul/examples/accessible/*.java" />
+    </compile>
+  </target>
+
+  <target name="jars.accessor"
+	  depends="compile.accessor">
+    <mkdir dir="jars" />
+    <jar destfile="jars/accessor-main.jar"
+	 basedir="classes.acc">
+      <include name="de/fencing_game/paul/examples/accessible/*" />
+      <exclude name="**/*llowed*.*" />
+    </jar>
+    <jar destfile="jars/accessor-disallowed.jar"
+	 basedir="classes.acc">
+      <include name="de/fencing_game/paul/examples/accessible/Disallowed*" />
+    </jar>
+    <jar destfile="jars/accessor-allowed.jar"
+	 basedir="classes.acc">
+      <include name="de/fencing_game/paul/examples/accessible/Allowed*" />
+    </jar>
   </target>
 
 
