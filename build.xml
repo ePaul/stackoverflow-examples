@@ -73,6 +73,27 @@
     </compile>
   </target>
 
+  <target name="test.rome"
+	  depends="compile.rome">
+    <java classname="de.fencing_game.paul.examples.rome.RomeTest"
+	  classpathref="romepath">
+    </java>
+  </target>
+
+  <target name="compile.rome">
+    <mkdir dir="classes" />
+    <compile destdir="classes">
+      <classpath id="romepath">
+	<pathelement location="classes" />
+	<pathelement location="/usr/share/java/xercesImpl.jar" />
+	<pathelement location="../test/rome/target/rome-1.0.1-SNAPSHOT.jar" />
+	<pathelement location="../test/rome/target/lib/jdom-1.0.jar" />
+      </classpath>
+      <filename name="de/fencing_game/paul/examples/rome/*.java" />
+    </compile>
+  </target>
+
+
   <target name="jars.accessor"
 	  depends="compile.accessor">
     <mkdir dir="jars" />
