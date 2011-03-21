@@ -50,13 +50,28 @@ public class DecimalBigInt
      * @throws IllegalArgumentException if any digit is out of range.
      */
     public DecimalBigInt(int... digits) {
+        // we count how much leading zeroes there are.
+        int zeroCount = 0;
+        // zero == until now no nonzero digit seen.
+        boolean zero = true;
         for(int digit : digits) {
             if(digit < 0 ||  BASE <= digit) {
                 throw new IllegalArgumentException("digit " + digit +
                                                    " out of range!");
             }
+            if(zero) {
+                if (digit != 0) {
+                    zero = false;
+                }
+                else {
+                    zeroCount ++;
+                }
+            }
         }
-        this.digits = digits.clone();
+        // cut off leading zeros by copying only the rest.
+        // (We always do the copying, since we want to be independent
+        //  from the input array.)
+        this.digits = Arrays.copyOfRange(digits, zeroCount, digits.length);
     }
 
   
@@ -152,10 +167,6 @@ public class DecimalBigInt
         addDigits(result, result.length-1, this.digits);
         addDigits(result, result.length-1, that.digits);
 
-        // cut off leading zero, if any
-        if(result[0] == 0) {
-            result = Arrays.copyOfRange(result, 1, result.length);
-        }
         return new DecimalBigInt(result);
     }
 
@@ -229,10 +240,6 @@ public class DecimalBigInt
         multiplyDigits(result, result.length-1, 
                        this.digits, that.digits);
 
-        // cut off leading zero, if any
-        if(result[0] == 0) {
-            result = Arrays.copyOfRange(result, 1, result.length);
-        }
         return new DecimalBigInt(result);
     }
 
@@ -311,7 +318,7 @@ public class DecimalBigInt
      */
     public static void main(String[] params) {
         // test of constructor + toString
-        DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
+        DecimalBigInt d = new DecimalBigInt(0,0, 7, 5, 2, 12345);
         System.out.println("d: " + d);
 
         // test of valueOf
