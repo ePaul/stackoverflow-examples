@@ -109,22 +109,22 @@ public class DecimalBigInt
      *   {@link Character.MAX_RADIX} (36, inclusive).
      */
     public static DecimalBigInt valueOf(String text, int radix) {
-	if(radix < Character.MIN_RADIX || Character.MAX_RADIX < radix) {
-	    throw new IllegalArgumentException("radix out of range: " + radix);
-	}
-	DecimalBigInt bigRadix = new DecimalBigInt(radix);
-	DecimalBigInt value = new DecimalBigInt(); // 0
-	for(char digit : text.toCharArray()) {
-	    int iDigit = Character.digit(digit, radix);
-	    if(iDigit < 0) {
-		throw new NumberFormatException("digit " + digit +
-						" is not a valid base-"+radix+
-						"-digit.");
-	    }
-	    DecimalBigInt bigDigit = new DecimalBigInt(iDigit);
-	    value = value.times(bigRadix).plus(bigDigit);
-	}
-	return value;
+        if(radix < Character.MIN_RADIX || Character.MAX_RADIX < radix) {
+            throw new IllegalArgumentException("radix out of range: " + radix);
+        }
+        DecimalBigInt bigRadix = new DecimalBigInt(radix);
+        DecimalBigInt value = new DecimalBigInt(); // 0
+        for(char digit : text.toCharArray()) {
+            int iDigit = Character.digit(digit, radix);
+            if(iDigit < 0) {
+                throw new NumberFormatException("digit " + digit +
+                                                " is not a valid base-"+radix+
+                                                "-digit.");
+            }
+            DecimalBigInt bigDigit = new DecimalBigInt(iDigit);
+            value = value.times(bigRadix).plus(bigDigit);
+        }
+        return value;
     }
 
     /**
