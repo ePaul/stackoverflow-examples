@@ -418,11 +418,11 @@ public class DecimalBigInt
         System.out.println("prod <=> d: " + prod.compareTo(d));
         System.out.println("d <=> prod: " + d.compareTo(prod));
 
-        // The result should need 3999999 decimal digits. This
-        // is the biggest faculty which Emacs calc can calculate
-        // (in floating point mode):
-        DecimalBigInt fac = DecimalBigInt.faculty(736275);
-        System.out.println("fac(736275) = " + fac.toDecimalString());
+        //// The result should need 3999999 decimal digits. This
+        //// is the biggest faculty which Emacs calc can calculate
+        //// (in floating point mode):
+        //        DecimalBigInt fac = DecimalBigInt.faculty(736275);
+        // System.out.println("fac(736275) = " + fac.toDecimalString());
     }
 
 
