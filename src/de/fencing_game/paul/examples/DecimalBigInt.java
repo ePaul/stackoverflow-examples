@@ -110,6 +110,34 @@ public class DecimalBigInt
     }
 
     /**
+     * converts a nonnegative {@code long} value to a DecimalBigInt number.
+     * @throws IllegalArgumentException if number is negative.
+     * @return the DecimalBigInt representation of the same natural number.
+     */
+    public static DecimalBigInt valueOf(long number) {
+        if(number < 0) {
+            throw new IllegalArgumentException("negative number: " +number);
+        }
+        if(number == 0L)
+            return ZERO;
+        if(number == 1L)
+            return ONE;
+
+        // BASE^2 = 10^18 < 2^63 < 10^19 < 10^27 = BASE^3
+        // => long can have maximally 3 of our digits
+        //    (and these are really needed)
+        int[] digits = new int[3];
+        // start with the last digit
+        int index = 2;
+        while(number > 0) {
+            digits[index] = (int)(number % BASE);
+            number = number / BASE;
+            index-- ;
+        }
+        return new DecimalBigInt(digits);
+    }
+
+    /**
      * creates a DecimalBigInt from a string-representation
      * in some arbitrary radix.
      *
