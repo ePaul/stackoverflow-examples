@@ -395,7 +395,24 @@ public class DecimalBigInt
         DecimalBigInt prod = d2.times(d2);
         System.out.println("prod: " + prod);
 
+        // test of valueOf
+        DecimalBigInt d3 = DecimalBigInt.valueOf("12345678901234567890", 10);
+        System.out.println("d3: " + d3); // should be the same as d2
+        DecimalBigInt d4 = DecimalBigInt.valueOf("123456789A0123456789A0", 11);
+        System.out.println("d4: " + d4);
+        DecimalBigInt d5 = DecimalBigInt.valueOf("123456012345601234560", 7);
+        System.out.println("d5: " + d5);
+
+        DecimalBigInt d6 = DecimalBigInt.valueOf(Long.MAX_VALUE);
+        System.out.println("d6: " + d6);
+
+        DecimalBigInt d7 = DecimalBigInt.valueOf(new int[]{3, 5, 7}, 100);
+        System.out.println("d7: " + d7);
+
+
+        // test of compareTo
         System.out.println("d2 <=> d: " + d2.compareTo(d));
+        System.out.println("d2 <=> d3: " + d2.compareTo(d3));
         System.out.println("d <=> d2: " + d.compareTo(d2));
         System.out.println("sum <=> d: " + sum.compareTo(d));
         System.out.println("prod <=> d: " + prod.compareTo(d));
