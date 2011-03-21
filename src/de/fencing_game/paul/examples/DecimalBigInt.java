@@ -92,6 +92,42 @@ public class DecimalBigInt
     }
 
     /**
+     * creates a DecimalBigInt from a string-representation
+     * in some arbitrary radix.
+     *
+     * Note: this is not the most efficient implementation, since we
+     * use the Horner scheme on DecimalBigInt values, instead working
+     * directly on {@code int[]} and convert to a DecimalBigInt only
+     * in the end.
+     *
+     * @param text the big-endian string representation of the number, using
+     *  the decimal digits '0' ... '9' and additionally the latin
+     *  letters 'A' ... 'Z' (or 'a' ... 'z'). (Only letters below
+     *  the given radix are allowed, of course.)
+     * @param radix the radix used in the representation, between
+     *   {@link Character.MIN_RADIX} (2, inclusive) and
+     *   {@link Character.MAX_RADIX} (36, inclusive).
+     */
+    public static DecimalBigInt valueOf(String text, int radix) {
+	if(radix < Character.MIN_RADIX || Character.MAX_RADIX < radix) {
+	    throw new IllegalArgumentException("radix out of range: " + radix);
+	}
+	DecimalBigInt bigRadix = new DecimalBigInt(radix);
+	DecimalBigInt value = new DecimalBigInt(); // 0
+	for(char digit : text.toCharArray()) {
+	    int iDigit = Character.digit(digit, radix);
+	    if(iDigit < 0) {
+		throw new NumberFormatException("digit " + digit +
+						" is not a valid base-"+radix+
+						"-digit.");
+	    }
+	    DecimalBigInt bigDigit = new DecimalBigInt(iDigit);
+	    value = value.times(bigRadix).plus(bigDigit);
+	}
+	return value;
+    }
+
+    /**
      * formats the number as a decimal String.
      */
     public String toDecimalString() {
