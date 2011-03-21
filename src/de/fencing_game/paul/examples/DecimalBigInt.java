@@ -43,6 +43,9 @@ public class DecimalBigInt
     private int[] digits;
 
 
+    public final static DecimalBigInt ZERO = new DecimalBigInt();
+    public final static DecimalBigInt ONE = new DecimalBigInt(1);
+
     /**
      * creates a DecimalBigInt based on an array of digits.
      * @param digits a list of digits, each between 0 (inclusive)
@@ -128,7 +131,7 @@ public class DecimalBigInt
             throw new IllegalArgumentException("radix out of range: " + radix);
         }
         DecimalBigInt bigRadix = new DecimalBigInt(radix);
-        DecimalBigInt value = new DecimalBigInt(); // 0
+        DecimalBigInt value = ZERO;
         for(char digit : text.toCharArray()) {
             int iDigit = Character.digit(digit, radix);
             if(iDigit < 0) {
@@ -301,7 +304,7 @@ public class DecimalBigInt
      *  use bigger number anyway, as it takes years).
      */
     public static DecimalBigInt faculty(int n) {
-        DecimalBigInt fac = new DecimalBigInt(1);
+        DecimalBigInt fac = DecimalBigInt.ONE;
         for(int i = 2; i <= n; i++) {
             fac = fac.times(new DecimalBigInt(i));
             if(i % 1000 == 0) {
