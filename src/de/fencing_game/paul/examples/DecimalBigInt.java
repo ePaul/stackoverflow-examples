@@ -174,6 +174,33 @@ public class DecimalBigInt
     }
 
     /**
+     * creates a DecimalBigInt from a representation
+     * in some arbitrary radix.
+     *
+     * @param digits the individual digits, each between 0 (inclusive)
+     *   and radix, exclusive.
+     * @param radix the radix of the representation, an arbitrary value >= 2.
+     *    (Base-1 representations are not allowed.)
+     */
+    public static DecimalBigInt valueOf(int[] digits, int radix) {
+        if(radix < 2) {
+            throw new IllegalArgumentException("illegal radix: " + radix);
+        }
+        DecimalBigInt bigRadix = valueOf(radix);
+        DecimalBigInt value = ZERO;
+        for(int digit : digits) {
+            if(digit < 0 || radix <= digit) {
+                throw new IllegalArgumentException("digit " + digit +
+                                                   " out of range");
+            }
+            DecimalBigInt bigDigit = DecimalBigInt.valueOf(digit);
+            value = value.times(bigRadix).plus(bigDigit);
+        }
+        return value;
+    }
+
+
+    /**
      * formats the number as a decimal String.
      */
     public String toDecimalString() {
