@@ -43,6 +43,9 @@ public class DecimalBigInt
     private int[] digits;
 
 
+    public final static DecimalBigInt ZERO = new DecimalBigInt();
+    public final static DecimalBigInt ONE = new DecimalBigInt(1);
+
     /**
      * creates a DecimalBigInt based on an array of digits.
      * @param digits a list of digits, each between 0 (inclusive)
@@ -50,13 +53,28 @@ public class DecimalBigInt
      * @throws IllegalArgumentException if any digit is out of range.
      */
     public DecimalBigInt(int... digits) {
+        // we count how much leading zeroes there are.
+        int zeroCount = 0;
+        // zero == until now no nonzero digit seen.
+        boolean zero = true;
         for(int digit : digits) {
             if(digit < 0 ||  BASE <= digit) {
                 throw new IllegalArgumentException("digit " + digit +
                                                    " out of range!");
             }
+            if(zero) {
+                if (digit != 0) {
+                    zero = false;
+                }
+                else {
+                    zeroCount ++;
+                }
+            }
         }
-        this.digits = digits.clone();
+        // cut off leading zeros by copying only the rest.
+        // (We always do the copying, since we want to be independent
+        //  from the input array.)
+        this.digits = Arrays.copyOfRange(digits, zeroCount, digits.length);
     }
 
   
@@ -92,6 +110,97 @@ public class DecimalBigInt
     }
 
     /**
+     * converts a nonnegative {@code long} value to a DecimalBigInt number.
+     * @throws IllegalArgumentException if number is negative.
+     * @return the DecimalBigInt representation of the same natural number.
+     */
+    public static DecimalBigInt valueOf(long number) {
+        if(number < 0) {
+            throw new IllegalArgumentException("negative number: " +number);
+        }
+        if(number == 0L)
+            return ZERO;
+        if(number == 1L)
+            return ONE;
+
+        // BASE^2 = 10^18 < 2^63 < 10^19 < 10^27 = BASE^3
+        // => long can have maximally 3 of our digits
+        //    (and these are really needed)
+        int[] digits = new int[3];
+        // start with the last digit
+        int index = 2;
+        while(number > 0) {
+            digits[index] = (int)(number % BASE);
+            number = number / BASE;
+            index-- ;
+        }
+        return new DecimalBigInt(digits);
+    }
+
+    /**
+     * creates a DecimalBigInt from a string-representation
+     * in some arbitrary radix.
+     *
+     * Note: this is not the most efficient implementation, since we
+     * use the Horner scheme on DecimalBigInt values, instead working
+     * directly on {@code int[]} and convert to a DecimalBigInt only
+     * in the end.
+     *
+     * @param text the big-endian string representation of the number, using
+     *  the decimal digits '0' ... '9' and additionally the latin
+     *  letters 'A' ... 'Z' (or 'a' ... 'z'). (Only letters below
+     *  the given radix are allowed, of course.)
+     * @param radix the radix used in the representation, between
+     *   {@link Character.MIN_RADIX} (2, inclusive) and
+     *   {@link Character.MAX_RADIX} (36, inclusive).
+     */
+    public static DecimalBigInt valueOf(String text, int radix) {
+        if(radix < Character.MIN_RADIX || Character.MAX_RADIX < radix) {
+            throw new IllegalArgumentException("radix out of range: " + radix);
+        }
+        DecimalBigInt bigRadix = new DecimalBigInt(radix);
+        DecimalBigInt value = ZERO;
+        for(char digit : text.toCharArray()) {
+            int iDigit = Character.digit(digit, radix);
+            if(iDigit < 0) {
+                throw new NumberFormatException("digit " + digit +
+                                                " is not a valid base-"+radix+
+                                                "-digit.");
+            }
+            DecimalBigInt bigDigit = new DecimalBigInt(iDigit);
+            value = value.times(bigRadix).plus(bigDigit);
+        }
+        return value;
+    }
+
+    /**
+     * creates a DecimalBigInt from a representation
+     * in some arbitrary radix.
+     *
+     * @param digits the individual digits, each between 0 (inclusive)
+     *   and radix, exclusive.
+     * @param radix the radix of the representation, an arbitrary value >= 2.
+     *    (Base-1 representations are not allowed.)
+     */
+    public static DecimalBigInt valueOf(int[] digits, int radix) {
+        if(radix < 2) {
+            throw new IllegalArgumentException("illegal radix: " + radix);
+        }
+        DecimalBigInt bigRadix = valueOf(radix);
+        DecimalBigInt value = ZERO;
+        for(int digit : digits) {
+            if(digit < 0 || radix <= digit) {
+                throw new IllegalArgumentException("digit " + digit +
+                                                   " out of range");
+            }
+            DecimalBigInt bigDigit = DecimalBigInt.valueOf(digit);
+            value = value.times(bigRadix).plus(bigDigit);
+        }
+        return value;
+    }
+
+
+    /**
      * formats the number as a decimal String.
      */
     public String toDecimalString() {
@@ -116,10 +225,6 @@ public class DecimalBigInt
         addDigits(result, result.length-1, this.digits);
         addDigits(result, result.length-1, that.digits);
 
-        // cut off leading zero, if any
-        if(result[0] == 0) {
-            result = Arrays.copyOfRange(result, 1, result.length);
-        }
         return new DecimalBigInt(result);
     }
 
@@ -193,10 +298,6 @@ public class DecimalBigInt
         multiplyDigits(result, result.length-1, 
                        this.digits, that.digits);
 
-        // cut off leading zero, if any
-        if(result[0] == 0) {
-            result = Arrays.copyOfRange(result, 1, result.length);
-        }
         return new DecimalBigInt(result);
     }
 
@@ -258,7 +359,7 @@ public class DecimalBigInt
      *  use bigger number anyway, as it takes years).
      */
     public static DecimalBigInt faculty(int n) {
-        DecimalBigInt fac = new DecimalBigInt(1);
+        DecimalBigInt fac = DecimalBigInt.ONE;
         for(int i = 2; i <= n; i++) {
             fac = fac.times(new DecimalBigInt(i));
             if(i % 1000 == 0) {
@@ -275,7 +376,7 @@ public class DecimalBigInt
      */
     public static void main(String[] params) {
         // test of constructor + toString
-        DecimalBigInt d = new DecimalBigInt(7, 5, 2, 12345);
+        DecimalBigInt d = new DecimalBigInt(0,0, 7, 5, 2, 12345);
         System.out.println("d: " + d);
 
         // test of valueOf
@@ -294,17 +395,34 @@ public class DecimalBigInt
         DecimalBigInt prod = d2.times(d2);
         System.out.println("prod: " + prod);
 
+        // test of valueOf
+        DecimalBigInt d3 = DecimalBigInt.valueOf("12345678901234567890", 10);
+        System.out.println("d3: " + d3); // should be the same as d2
+        DecimalBigInt d4 = DecimalBigInt.valueOf("123456789A0123456789A0", 11);
+        System.out.println("d4: " + d4);
+        DecimalBigInt d5 = DecimalBigInt.valueOf("123456012345601234560", 7);
+        System.out.println("d5: " + d5);
+
+        DecimalBigInt d6 = DecimalBigInt.valueOf(Long.MAX_VALUE);
+        System.out.println("d6: " + d6);
+
+        DecimalBigInt d7 = DecimalBigInt.valueOf(new int[]{3, 5, 7}, 100);
+        System.out.println("d7: " + d7);
+
+
+        // test of compareTo
         System.out.println("d2 <=> d: " + d2.compareTo(d));
+        System.out.println("d2 <=> d3: " + d2.compareTo(d3));
         System.out.println("d <=> d2: " + d.compareTo(d2));
         System.out.println("sum <=> d: " + sum.compareTo(d));
         System.out.println("prod <=> d: " + prod.compareTo(d));
         System.out.println("d <=> prod: " + d.compareTo(prod));
 
-        // The result should need 3999999 decimal digits. This
-        // is the biggest faculty which Emacs calc can calculate
-        // (in floating point mode):
-        DecimalBigInt fac = DecimalBigInt.faculty(736275);
-        System.out.println("fac(736275) = " + fac.toDecimalString());
+        //// The result should need 3999999 decimal digits. This
+        //// is the biggest faculty which Emacs calc can calculate
+        //// (in floating point mode):
+        //        DecimalBigInt fac = DecimalBigInt.faculty(736275);
+        // System.out.println("fac(736275) = " + fac.toDecimalString());
     }
 
 
