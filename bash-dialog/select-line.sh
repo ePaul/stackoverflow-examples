@@ -47,10 +47,10 @@ showArgs "direct parameter" "Name Surname mymail@mail.com" "" "Another New perso
 
 declare -a args=()
 
-cat example.txt | while read
+while read
 do
     args+=("$REPLY" "")
-done
+done < <( cat example.txt )
 
 showArgs "read + array" "${args[@]}"
 
