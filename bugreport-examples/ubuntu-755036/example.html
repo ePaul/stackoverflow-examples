@@ -1,0 +1,25 @@
+<html>
+<head>
+  <script type="application/javascript">
+    function updateWebPage(){
+       alert("java is touching me");
+       document.thisappletawesome.setText("hihihi")
+    }
+  </script>
+</head>
+<body>
+
+  <p>Example-applet:</p>
+    
+  <p>
+    <object height='300'
+            id='thisappletawesome'
+            name='thisappletawesome'
+            type='application/x-java-applet'
+            width='550'>
+      <param name='classid' value='java:JSHelloWorld.class'>
+      <param name='codebase' value='/java/'>
+    </object>
+</p>
+
+</body>
