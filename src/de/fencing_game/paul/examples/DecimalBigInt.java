@@ -301,6 +301,107 @@ public class DecimalBigInt
         return new DecimalBigInt(result);
     }
 
+
+    /**
+     * does one step in the short division algorithm, i.e. divides
+     *  a two-digit number by a one-digit one.
+     *
+     * @param result the array to put the quotient digit in.
+     * @param resultIndex the index in the result array where
+     *             the quotient digit should be put.
+     * @param divident the last digit of the divident.
+     * @param lastRemainder the first digit of the divident (being the
+     *           remainder of the operation one digit to the left).
+     *           This must be < divisor.
+     * @param divisor the divisor.
+     * @returns the remainder of the division operation.
+     */
+    private int divideDigit(int[] result, int resultIndex,
+                            int divident, int lastRemainder,
+                            int divisor) {
+        assert divisor < BASE;
+        assert lastRemainder < divisor;
+
+        long ent = divident + (long)BASE * lastRemainder;
+        
+        long quot = ent / divisor;
+        long rem = ent % divisor;
+        
+        assert quot < BASE;
+        assert rem < divisor;
+
+        result[resultIndex] = (int)quot;
+        return (int)rem;
+    }
+
+    /**
+     * The short division algorithm, like described in
+     * <a href="http://en.wikipedia.org/wiki/Short_division">Wikipedia's
+     *   article <em>Short division</em></a>.
+     * @param result an array where we should put the quotient digits in.
+     * @param resultIndex the index in the array where the highest order digit
+     *     should be put, the next digits will follow.
+     * @param divident the array with the divident's digits. (These will only
+     *          be read, not written to.)
+     * @param dividentIndex the index in the divident array where we should
+     *         start dividing. We will continue until the end of the array.
+     * @param divisor the divisor. This must be a number smaller than
+     *        {@link #BASE}.
+     * @return the remainder, which will be a number smaller than
+     *     {@code divisor}.
+     */
+    private int divideDigits(int[] result, int resultIndex,
+                             int[] divident, int dividentIndex,
+                             int divisor) {
+        int remainder = 0;
+        for(; dividentIndex < divident.length; dividentIndex++, resultIndex++) {
+            remainder = divideDigit(result, resultIndex,
+                                    divident[dividentIndex],
+                                    remainder, divisor);
+        }
+        return remainder;
+    }
+
+
+    /**
+     * Divides this number by a small number.
+     * @param divisor an integer with {@code 0 < divisor < BASE}.
+     * @return the integer part of the quotient {@code this / divisor},
+     *     ignoring the remainder.
+     * @throws IllegalArgumentException if the divisor is <= 0 or >= BASE.
+     */
+    public DecimalBigInt divideBy(int divisor)
+    {
+        if(divisor <= 0 || BASE <= divisor) {
+            throw new IllegalArgumentException("divisor " + divisor +
+                                               " out of range!");
+        }
+
+        int[] result = new int[digits.length];
+        divideDigits(result, 0,
+                     digits, 0,
+                     divisor);
+        return new DecimalBigInt(result);
+    }
+
+    /**
+     * Divides this number by a small number, returning the remainder.
+     * @param divisor an integer with {@code 0 < divisor < BASE}.
+     * @return the remainder from the division {@code this / divisor}.
+     * @throws IllegalArgumentException if the divisor is <= 0 or >= BASE.
+     */
+    public int modulo(int divisor) {
+        if(divisor <= 0 || BASE <= divisor) {
+            throw new IllegalArgumentException("divisor " + divisor +
+                                               " out of range!");
+        }
+        int[] result = new int[digits.length];
+        return divideDigits(result, 0,
+                            digits, 0,
+                            divisor);
+    }
+
+
     /**
      * calculates a hashCode for this object.
      */
@@ -408,6 +509,10 @@ public class DecimalBigInt
 
         DecimalBigInt d7 = DecimalBigInt.valueOf(new int[]{3, 5, 7}, 100);
         System.out.println("d7: " + d7);
+
+        DecimalBigInt d3_by_100 = d3.divideBy(100);
+        System.out.println("d3/100 = " + d3_by_100);
+        System.out.println("d3%100 = " + d3.modulo(100));
 
 
         // test of compareTo
