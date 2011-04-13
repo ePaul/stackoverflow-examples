@@ -125,7 +125,7 @@ public class DecimalBigInt
 
         // BASE^2 = 10^18 < 2^63 < 10^19 < 10^27 = BASE^3
         // => long can have maximally 3 of our digits
-        //    (and these are really needed)
+        //    (and these might really be needed)
         int[] digits = new int[3];
         // start with the last digit
         int index = 2;
@@ -213,6 +213,30 @@ public class DecimalBigInt
         }
         return b.toString();
     }
+
+    /**
+     * Converts the number to a String in a given radix.
+     * This uses {@link Character.digit} to convert each digit
+     * to one character.
+     * @param radix the radix to use, between {@link Character.MIN_RADIX}
+     *   and {@link Character.MAX_RADIX}.
+     * @return a String containing the digits of this number in the
+     *   specified radix, using '0' .. '9' and 'a' .. 'z' (as much as needed).
+     */
+    public String toString(int radix) {
+        if(radix < Character.MIN_RADIX || Character.MAX_RADIX < radix) {
+            throw new IllegalArgumentException("radix out of range: " + radix);
+        }
+        if(digits.length == 0)
+            return "0";
+        int[] rdigits = convertTo(radix);
+        StringBuilder b = new StringBuilder(rdigits.length);
+        for(int dig : rdigits) {
+            b.append(Character.forDigit(dig, radix));
+        }
+        return b.toString();
+    }
+
 
 
     /**
@@ -401,6 +425,54 @@ public class DecimalBigInt
                             divisor);
     }
 
+    /**
+     * converts this number to an arbitrary radix.
+     * @param radix the target radix, {@code 1 < radix < BASE}.
+     * @return the digits of this number in the base-radix system,
+     *     in big-endian order.
+     */
+    public int[] convertTo(int radix)
+    {
+        if(radix <= 1 || BASE <= radix) {
+            throw new IllegalArgumentException("radix " + radix +
+                                               " out of range!");
+        }
+        // zero has no digits.
+        if(digits.length == 0)
+            return new int[0];
+
+        // raw estimation how many output digits we will need.
+        // This is just enough in cases like BASE-1, and up to
+        // 30 digits (for base 2) too much for something like (1,0,0).
+        int len = (int) (Math.log(BASE) / Math.log(radix) * digits.length)+1;
+        int[] rDigits = new int[len];
+        int rIndex = len-1;
+        int[] current = digits;
+        int quotLen = digits.length;
+
+        while(quotLen > 0)  {
+            int[] quot = new int[quotLen];
+            int rem = divideDigits(quot, 0,
+                                   current, current.length - quotLen,
+                                   radix);
+            rDigits[rIndex] = rem;
+            rIndex --;
+            
+            current = quot;
+
+            if(current[0] == 0) {
+                // ommit leading zeroes in next round.
+                quotLen--;
+            }
+        }
+
+        // cut of leading zeroes in rDigits:
+        while(rIndex < 0 || rDigits[rIndex] == 0) {
+            rIndex++;
+        }
+        return Arrays.copyOfRange(rDigits, rIndex, rDigits.length);
+    }
+
 
     /**
      * calculates a hashCode for this object.
@@ -522,6 +594,27 @@ public class DecimalBigInt
         System.out.println("sum <=> d: " + sum.compareTo(d));
         System.out.println("prod <=> d: " + prod.compareTo(d));
         System.out.println("d <=> prod: " + d.compareTo(prod));
+
+        // test of convertTo:
+        System.out.println("d in base 5: " + d.toString(5));
+        System.out.println("d in base 2: " + d.toString(2));
+        System.out.println("d4 in base 11: " + d4.toString(11));
+        System.out.println("d5 in base 7: " + d5.toString(7));
+
+        //        DecimalBigInt d8 = new DecimalBigInt(BASE-1, BASE-1);
+        DecimalBigInt d8 = new DecimalBigInt(1, 0, 0);
+        System.out.println(d8);
+        for(int i = 2; i < 1000; i++) {
+            try {
+                d8.convertTo(i);
+            }
+            catch(Exception e) {
+                System.err.println("Problem bei i = " + i);
+                e.printStackTrace();
+                break;
+            }
+        }
+
 
         //// The result should need 3999999 decimal digits. This
         //// is the biggest faculty which Emacs calc can calculate
