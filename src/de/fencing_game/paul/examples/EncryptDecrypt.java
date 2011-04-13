@@ -67,10 +67,11 @@ public class EncryptDecrypt {
     {
         EncryptDecrypt ed = new EncryptDecrypt();
 
+        SecretKey key;
         if(params.length > 3) {
             KeyGenerator kgen = KeyGenerator.getInstance("AES");
             kgen.init(128);
-            SecretKey key = kgen.generateKey();
+            key = kgen.generateKey();
         }
         else {
             SecretKeyFactory factory = SecretKeyFactory.getInstance("AES");
@@ -80,7 +81,7 @@ public class EncryptDecrypt {
                                   "AES");
             System.out.println(spec);
             
-            SecretKey key = factory.generateSecret(spec);
+            key = factory.generateSecret(spec);
             System.out.println(key);
         }
 
