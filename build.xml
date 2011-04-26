@@ -66,6 +66,26 @@
     </javadoc>
   </target>
 
+  <target name="gentest.doclet"
+          depends="compile.doclet"
+          description="runs the generic-test-doclet on itself."
+          >
+    <javadoc encoding="UTF-8"
+             classpathref="tools.jar"
+             access="private"
+             failonerror="true"
+             source="1.5"
+             >
+      <fileset dir="src">
+        <include name="de/fencing_game/paul/examples/doclet/*" />
+      </fileset>
+      <doclet name="de.fencing_game.paul.examples.doclet.GenericTestDoclet"
+              path="./classes">
+      </doclet>
+    </javadoc>
+  </target>
+
+
   <target name="compile.accessor">
     <mkdir dir="classes.acc" />
     <compile destdir="classes.acc" >
