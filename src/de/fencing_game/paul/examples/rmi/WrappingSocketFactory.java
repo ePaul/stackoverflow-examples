@@ -153,7 +153,6 @@ public abstract class WrappingSocketFactory
     public Socket createSocket(String host, int port)
         throws IOException
     {
-        System.err.println("createSocket(" + host + ", " + port + ")");
         Socket baseSocket = getCSFac().createSocket(host, port);
         StreamPair streams = this.wrap(baseSocket.getInputStream(),
                                        baseSocket.getOutputStream(),
@@ -180,10 +179,8 @@ public abstract class WrappingSocketFactory
     public ServerSocket createServerSocket(int port)
         throws IOException
     {
-        System.err.println("createServerSocket(" + port + ")");
         final ServerSocket baseSocket = getSSFac().createServerSocket(port);
         ServerSocket ss = new WrappingServerSocket(baseSocket);
-        System.err.println(" => " + ss);
         return ss;
     }
 
@@ -216,16 +213,13 @@ public abstract class WrappingSocketFactory
          * wrap a new custom socket around it.
          */
         public Socket accept() throws IOException {
-            System.err.println(this+".accept()");
             final Socket baseSocket = base.accept();
-            System.err.println("baseSocket: " + baseSocket);
             StreamPair streams =
                 WrappingSocketFactory.this.wrap(baseSocket.getInputStream(),
                                                 baseSocket.getOutputStream(),
                                                 true);
             SocketImpl wrappingImpl =
                 new WrappingSocketImpl(streams, baseSocket);
-            System.err.println("wrappingImpl: " + wrappingImpl);
 
             // For some reason, this seems to work only as a
             // anonymous direct subclass of Socket, not as a
@@ -240,7 +234,6 @@ public abstract class WrappingSocketFactory
                         return baseSocket.getLocalAddress();
                     }
                 };
-            System.err.println("result: " + result);
             return result;
         }
     }
@@ -265,7 +258,6 @@ public abstract class WrappingSocketFactory
         private Socket base;
         
         WrappingSocketImpl(StreamPair pair, Socket base) {
-            System.err.println("new WrappingSocketImpl()");
             this.inStream = pair.input;
             this.outStream = pair.output;
             this.base = base;
@@ -285,7 +277,6 @@ public abstract class WrappingSocketFactory
         }
 
         protected int available() throws IOException {
-            System.err.println("available()");
             return inStream.available();
         }
 
@@ -304,9 +295,10 @@ public abstract class WrappingSocketFactory
         // only logging
 
         protected void create(boolean stream) {
-            System.err.println("create(" + stream + ")");
+            if(!stream) {
+                throw new IllegalArgumentException("datagram socket not supported.");
+            }
         }
-
 
         public Object getOption(int optID) {
             System.err.println("getOption(" + optID + ")");
@@ -314,12 +306,11 @@ public abstract class WrappingSocketFactory
         }
 
         public void setOption(int optID, Object value) {
-            System.err.println("setOption(" + optID +"," + value + ")");
-            // noop.
+            // noop, as we don't have any options.
         }
 
-        // unsupported operations
 
+        // unsupported operations
 
         protected void connect(String host, int port) {
             System.err.println("connect(" + host + ", " + port + ")");
