@@ -29,14 +29,6 @@ public class TracingSocketFactory extends WrappingSocketFactory {
     }
 
 
-    private static class EchoServerImpl
-        implements EchoServer {
-
-        public String echo(String param) {
-            return param + " " + param;
-        }
-    }
-
     public static void main(String[] egal)
         throws Exception
     {
