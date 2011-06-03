@@ -12,12 +12,10 @@ public class CompressedRMISocketFactory extends WrappingSocketFactory {
 
 
     protected StreamPair wrap(InputStream in, OutputStream out,
-                              boolean server) {
-        /*
+                              boolean server)
+    {
         return new StreamPair(new DecompressingInputStream(in),
                               new CompressingOutputStream(out));
-        */
-        return new StreamPair(in, out);
     }
 
 
