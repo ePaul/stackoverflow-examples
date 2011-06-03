@@ -1,4 +1,4 @@
-package de.fencing_game.paul.examples;
+package de.fencing_game.paul.examples.rmi;
 
 import java.rmi.*;
 

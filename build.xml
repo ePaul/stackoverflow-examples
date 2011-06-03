@@ -137,7 +137,10 @@
   <target name="compile.examples">
     <mkdir dir="classes" />
     <compile destdir="classes" >
-      <filename name="de/fencing_game/paul/examples/*" />
+      <or>
+        <filename name="de/fencing_game/paul/examples/*" />
+        <filename name="de/fencing_game/paul/examples/rmi/*" />
+      </or>
     </compile>
   </target>
 
