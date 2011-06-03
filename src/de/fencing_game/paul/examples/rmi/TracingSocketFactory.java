@@ -5,8 +5,27 @@ import java.rmi.registry.*;
 import java.rmi.server.*;
 import java.io.*;
 
-public class TracingSocketFactory extends WrappingSocketFactory {
+/**
+ * An RMI socket factory used for tracing purposes.
+ * Its output streams print a note for every write and flush.
+ *
+ * This was mainly used to see whether there are enough {@code flush}s.
+ */
+public class TracingSocketFactory
+    extends WrappingSocketFactory
+{
 
+    private static final long serialVersionUID = 1;
+
+    // ------------- implementation ------------
+
+    /**
+     * Wraps the output stream in a debugging variant which also
+     * prints information about every method before forwarding it
+     * to the relevant method of the destination stream.
+     *
+     * The input stream does nothing special.
+     */
     protected StreamPair wrap(InputStream in, OutputStream out, boolean server)
     {
         InputStream wrappedIn = in;
@@ -28,14 +47,13 @@ public class TracingSocketFactory extends WrappingSocketFactory {
         return new StreamPair(wrappedIn, wrappedOut);
     }
 
-
+    /**
+     * main-method for testing and example purposes.
+     */
     public static void main(String[] egal)
         throws Exception
     {
         TracingSocketFactory fac = new TracingSocketFactory();
-
-        
-
         Remote server =
             UnicastRemoteObject.exportObject(new EchoServerImpl(),
                                              0, fac, fac);
@@ -46,11 +64,6 @@ public class TracingSocketFactory extends WrappingSocketFactory {
         
         registry.bind("echo", server);
 
-        //        EchoServer es = (EchoServer)registry.lookup("echo");
-        //        System.out.println(es.echo("hallo"));
-
         Thread.sleep(3*60*1000);
     }
-
-
 }
