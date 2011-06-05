@@ -8,7 +8,7 @@ import java.util.Formatter;
  * which uses a decimal-based format (instead of a binary based
  * one like the {@link java.math.BigInteger}).
  * <p>
- * The numbers are stored in a positional notation with base 1000000000 (10⁹),
+ * The numbers are stored in a positional notation with radix 1000000000 (10⁹),
  * which supports easier conversion from/to decimal.
  * </p><p>
  * Until now we only have addition and multiplication, no subtraction
@@ -24,15 +24,15 @@ public class DecimalBigInt
 {
 
     /**
-     * The base (radix) of our positional system.
+     * The radix (base) of our positional system.
      */
-    public final static int BASE = 1000000000;
+    public final static int RADIX = 1000000000;
 
     /**
      * The number of decimal digits fitting in one digit
      * of our system.
      */
-    private final static int BASE_DECIMAL_DIGITS = 9;
+    private final static int RADIX_DECIMAL_DIGITS = 9;
 
 
     /**
@@ -49,7 +49,7 @@ public class DecimalBigInt
     /**
      * creates a DecimalBigInt based on an array of digits.
      * @param digits a list of digits, each between 0 (inclusive)
-     *    and {@link BASE} (exclusive).
+     *    and {@link RADIX} (exclusive).
      * @throws IllegalArgumentException if any digit is out of range.
      */
     public DecimalBigInt(int... digits) {
@@ -58,7 +58,7 @@ public class DecimalBigInt
         // zero == until now no nonzero digit seen.
         boolean zero = true;
         for(int digit : digits) {
-            if(digit < 0 ||  BASE <= digit) {
+            if(digit < 0 ||  RADIX <= digit) {
                 throw new IllegalArgumentException("digit " + digit +
                                                    " out of range!");
             }
@@ -96,14 +96,14 @@ public class DecimalBigInt
      */
     public static DecimalBigInt valueOf(String decimal) {
         int decLen = decimal.length();
-        int bigLen = (decLen-1) / BASE_DECIMAL_DIGITS + 1;
+        int bigLen = (decLen-1) / RADIX_DECIMAL_DIGITS + 1;
         // length of first block
-        int firstSome = decLen - (bigLen-1) * BASE_DECIMAL_DIGITS;
+        int firstSome = decLen - (bigLen-1) * RADIX_DECIMAL_DIGITS;
         int[] digits = new int[bigLen];
         for(int i = 0; i < bigLen ; i++) {
             String block =
-                decimal.substring(Math.max(firstSome + (i-1)*BASE_DECIMAL_DIGITS, 0),
-                                  firstSome +   i  *BASE_DECIMAL_DIGITS);
+                decimal.substring(Math.max(firstSome + (i-1)*RADIX_DECIMAL_DIGITS, 0),
+                                  firstSome +   i  *RADIX_DECIMAL_DIGITS);
             digits[i] = Integer.parseInt(block);
         }
         return new DecimalBigInt(digits);
@@ -123,15 +123,15 @@ public class DecimalBigInt
         if(number == 1L)
             return ONE;
 
-        // BASE^2 = 10^18 < 2^63 < 10^19 < 10^27 = BASE^3
+        // RADIX^2 = 10^18 < 2^63 < 10^19 < 10^27 = RADIX^3
         // => long can have maximally 3 of our digits
         //    (and these might really be needed)
         int[] digits = new int[3];
         // start with the last digit
         int index = 2;
         while(number > 0) {
-            digits[index] = (int)(number % BASE);
-            number = number / BASE;
+            digits[index] = (int)(number % RADIX);
+            number = number / RADIX;
             index-- ;
         }
         return new DecimalBigInt(digits);
@@ -205,7 +205,7 @@ public class DecimalBigInt
      */
     public String toDecimalString() {
         StringBuilder b =
-            new StringBuilder(BASE_DECIMAL_DIGITS * digits.length);
+            new StringBuilder(RADIX_DECIMAL_DIGITS * digits.length);
         Formatter f = new Formatter(b);
         f.format("%d", digits[0]);
         for(int i = 1 ; i < digits.length; i++) {
@@ -278,8 +278,8 @@ public class DecimalBigInt
                           int addendDigit)
     {
         int sum = result[resultIndex] + addendDigit;
-        result[resultIndex] = sum % BASE;
-        int carry = sum / BASE;
+        result[resultIndex] = sum % RADIX;
+        int carry = sum / RADIX;
         if(carry > 0) {
             addDigit(result, resultIndex - 1, carry);
         }
@@ -293,8 +293,8 @@ public class DecimalBigInt
     private void multiplyDigit(int[] result, int resultIndex,
                                int firstFactor, int secondFactor) {
         long prod = (long)firstFactor * (long)secondFactor;
-        int prodDigit = (int)(prod % BASE);
-        int carry = (int)(prod / BASE);
+        int prodDigit = (int)(prod % RADIX);
+        int carry = (int)(prod / RADIX);
         addDigits(result, resultIndex, carry, prodDigit);
     }
 
@@ -343,15 +343,15 @@ public class DecimalBigInt
     private int divideDigit(int[] result, int resultIndex,
                             int divident, int lastRemainder,
                             int divisor) {
-        assert divisor < BASE;
+        assert divisor < RADIX;
         assert lastRemainder < divisor;
 
-        long ent = divident + (long)BASE * lastRemainder;
+        long ent = divident + (long)RADIX * lastRemainder;
         
         long quot = ent / divisor;
         long rem = ent % divisor;
         
-        assert quot < BASE;
+        assert quot < RADIX;
         assert rem < divisor;
 
         result[resultIndex] = (int)quot;
@@ -370,7 +370,7 @@ public class DecimalBigInt
      * @param dividentIndex the index in the divident array where we should
      *         start dividing. We will continue until the end of the array.
      * @param divisor the divisor. This must be a number smaller than
-     *        {@link #BASE}.
+     *        {@link #RADIX}.
      * @return the remainder, which will be a number smaller than
      *     {@code divisor}.
      */
@@ -389,14 +389,14 @@ public class DecimalBigInt
 
     /**
      * Divides this number by a small number.
-     * @param divisor an integer with {@code 0 < divisor < BASE}.
+     * @param divisor an integer with {@code 0 < divisor < RADIX}.
      * @return the integer part of the quotient {@code this / divisor},
      *     ignoring the remainder.
-     * @throws IllegalArgumentException if the divisor is <= 0 or >= BASE.
+     * @throws IllegalArgumentException if the divisor is <= 0 or >= RADIX.
      */
     public DecimalBigInt divideBy(int divisor)
     {
-        if(divisor <= 0 || BASE <= divisor) {
+        if(divisor <= 0 || RADIX <= divisor) {
             throw new IllegalArgumentException("divisor " + divisor +
                                                " out of range!");
         }
@@ -410,12 +410,12 @@ public class DecimalBigInt
 
     /**
      * Divides this number by a small number, returning the remainder.
-     * @param divisor an integer with {@code 0 < divisor < BASE}.
+     * @param divisor an integer with {@code 0 < divisor < RADIX}.
      * @return the remainder from the division {@code this / divisor}.
-     * @throws IllegalArgumentException if the divisor is <= 0 or >= BASE.
+     * @throws IllegalArgumentException if the divisor is <= 0 or >= RADIX.
      */
     public int modulo(int divisor) {
-        if(divisor <= 0 || BASE <= divisor) {
+        if(divisor <= 0 || RADIX <= divisor) {
             throw new IllegalArgumentException("divisor " + divisor +
                                                " out of range!");
         }
@@ -427,13 +427,13 @@ public class DecimalBigInt
 
     /**
      * converts this number to an arbitrary radix.
-     * @param radix the target radix, {@code 1 < radix < BASE}.
+     * @param radix the target radix, {@code 1 < radix < RADIX}.
      * @return the digits of this number in the base-radix system,
      *     in big-endian order.
      */
     public int[] convertTo(int radix)
     {
-        if(radix <= 1 || BASE <= radix) {
+        if(radix <= 1 || RADIX <= radix) {
             throw new IllegalArgumentException("radix " + radix +
                                                " out of range!");
         }
@@ -442,9 +442,9 @@ public class DecimalBigInt
             return new int[0];
 
         // raw estimation how many output digits we will need.
-        // This is just enough in cases like BASE-1, and up to
-        // 30 digits (for base 2) too much for something like (1,0,0).
-        int len = (int) (Math.log(BASE) / Math.log(radix) * digits.length)+1;
+        // This is just enough in cases like RADIX-1, and up to
+        // 30 digits (for radix 2) too much for something like (1,0,0).
+        int len = (int) (Math.log(RADIX) / Math.log(radix) * digits.length)+1;
         int[] rDigits = new int[len];
         int rIndex = len-1;
         int[] current = digits;
@@ -528,7 +528,7 @@ public class DecimalBigInt
      *
      * Each 1000 factors we print the current digit count
      * (in our internal radix) to the standard error stream.
-     * @param n should be < BASE (but you supposedly don't want to
+     * @param n should be < RADIX (but you supposedly don't want to
      *  use bigger number anyway, as it takes years).
      */
     public static DecimalBigInt faculty(int n) {
@@ -536,7 +536,7 @@ public class DecimalBigInt
         for(int i = 2; i <= n; i++) {
             fac = fac.times(new DecimalBigInt(i));
             if(i % 1000 == 0) {
-                System.err.println("log_BASE(fac("+i+")) = " +
+                System.err.println("log_RADIX(fac("+i+")) = " +
                                    fac.digits.length);
             }
         }
@@ -601,7 +601,7 @@ public class DecimalBigInt
         System.out.println("d4 in base 11: " + d4.toString(11));
         System.out.println("d5 in base 7: " + d5.toString(7));
 
-        //        DecimalBigInt d8 = new DecimalBigInt(BASE-1, BASE-1);
+        //        DecimalBigInt d8 = new DecimalBigInt(RADIX-1, RADIX-1);
         DecimalBigInt d8 = new DecimalBigInt(1, 0, 0);
         System.out.println(d8);
         for(int i = 2; i < 1000; i++) {
