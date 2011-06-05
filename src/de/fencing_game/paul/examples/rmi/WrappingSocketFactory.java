@@ -102,8 +102,8 @@ public abstract class WrappingSocketFactory
 
     /**
      * Wraps a pair of streams.
-     * Subclasses must implement this method do do the actual
-     * work to be done.
+     * Subclasses must implement this method to do the actual
+     * work.
      * @param input the input stream from the base socket.
      * @param output the output stream to the base socket.
      * @param server if true, we are constructing a socket in

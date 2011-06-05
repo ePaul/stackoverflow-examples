@@ -105,9 +105,6 @@ public class CompressedRMISocketFactory
         
         registry.bind("echo", server);
 
-        //        EchoServer es = (EchoServer)registry.lookup("echo");
-        //        System.out.println(es.echo("hallo"));
-
         Thread.sleep(3*60*1000);
     }
 }
