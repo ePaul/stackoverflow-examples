@@ -151,8 +151,8 @@ public class DecimalBigInt
      *  letters 'A' ... 'Z' (or 'a' ... 'z'). (Only letters below
      *  the given radix are allowed, of course.)
      * @param radix the radix used in the representation, between
-     *   {@link Character.MIN_RADIX} (2, inclusive) and
-     *   {@link Character.MAX_RADIX} (36, inclusive).
+     *   {@link Character#MIN_RADIX} (2, inclusive) and
+     *   {@link Character#MAX_RADIX} (36, inclusive).
      */
     public static DecimalBigInt valueOf(String text, int radix) {
         if(radix < Character.MIN_RADIX || Character.MAX_RADIX < radix) {
@@ -461,12 +461,12 @@ public class DecimalBigInt
             current = quot;
 
             if(current[0] == 0) {
-                // ommit leading zeroes in next round.
+                // omit leading zeros in next round.
                 quotLen--;
             }
         }
 
-        // cut of leading zeroes in rDigits:
+        // cut of leading zeros in rDigits:
         while(rIndex < 0 || rDigits[rIndex] == 0) {
             rIndex++;
         }
@@ -523,7 +523,7 @@ public class DecimalBigInt
 
 
     /**
-     * calculates the faculty of an int number.
+     * calculates the factorial of an int number.
      * This uses a simple iterative loop.
      *
      * Each 1000 factors we print the current digit count
@@ -531,7 +531,7 @@ public class DecimalBigInt
      * @param n should be < RADIX (but you supposedly don't want to
      *  use bigger number anyway, as it takes years).
      */
-    public static DecimalBigInt faculty(int n) {
+    public static DecimalBigInt factorial(int n) {
         DecimalBigInt fac = DecimalBigInt.ONE;
         for(int i = 2; i <= n; i++) {
             fac = fac.times(new DecimalBigInt(i));
@@ -617,9 +617,9 @@ public class DecimalBigInt
 
 
         //// The result should need 3999999 decimal digits. This
-        //// is the biggest faculty which Emacs calc can calculate
+        //// is the biggest factorial which Emacs calc can calculate
         //// (in floating point mode):
-        //        DecimalBigInt fac = DecimalBigInt.faculty(736275);
+        //        DecimalBigInt fac = DecimalBigInt.factorial(736275);
         // System.out.println("fac(736275) = " + fac.toDecimalString());
     }
 
