@@ -153,6 +153,9 @@
 	  classname="de.fencing_game.paul.examples.${class}"
 	  taskname="example"
 	  >
+      <syspropertyset>
+	<propertyref prefix="javax.net.ssl" />
+      </syspropertyset>
       <arg line="${params}" />
       <assertions><enable/></assertions>
     </java>
