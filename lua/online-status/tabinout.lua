@@ -1,6 +1,24 @@
+--[[
+ A package containing some utility methods for serializing
+ and deserializing Lua objects, specially tables in a pretty
+ format.
+--]]
+
+
 local mod = {}
 
-
+--------
+-- serializes the content of a map in a format which
+-- Lua would accept inside a { ... } table constructor.
+-- The leading and trailing braces are not included.
+-- The entries will be sorted by key.
+--
+-- o      - the object to be formatted.
+-- file   - the file to which to write the data.
+-- indent - a string used for indentation for tables.
+-- cmp    - a comparison function to sort the subtables.
+--          May be nil, then we sort alphabetically (strings)
+--          or numerically (numbers).
 function mod.serialize_mapcontent(o, file, subindent, cmp)
    for k,v in mod.pairsByKeys(o) do
       file:write(subindent)
@@ -12,7 +30,7 @@ function mod.serialize_mapcontent(o, file, subindent, cmp)
    end
 end
 
-
+--------
 -- serializes some object to the standard output.
 --
 -- o      - the object to be formatted.
@@ -46,6 +64,7 @@ function mod.serialize_sorted (o, file, indent, cmp)
 end
 
 
+--------
 -- iterates over a table by key order.
 --
 -- t - the table to iterate over.
@@ -69,31 +88,69 @@ function mod.pairsByKeys (t, f)
    return iter
 end
 
+----
+-- Loads some string as a function, runs this
+-- function in an empty environment, and returns
+-- this environment as well as the return values
+-- of the function.
+--
+-- This is used as the implementation of the 
+-- individual load functions.
+local function runInSandbox(code)
+   local tab = {}
+   local f = assert(loadstring(code))
+   setfenv(f, tab)
+   return tab, f()
+end
 
+-- returns all arguments but the first one.
+local function stripFirst(first, ...)
+   return ...
+end
+
+
+--------
 -- loads a string to a table.
 --   this executes the string with the
 --   environment of a new table, and then
 --   returns the table.
 --
 -- The code in the string should not need
--- any variables it does not declare itself,
+-- any variables it does not declare itself
+-- (including the usual global functions),
 -- as these are not available on runtime.
+--
 -- It runs in a really empty environment.
 function mod.loadUnwrappedTable(data)
-   local tab = {}
-   local f = assert(loadstring(data))
-   setfenv(f, tab)
-   f()
-   return tab
+   return (runInSandbox(data))
 end
 
+
+--------
+-- Loads a string to a table.
+--  The string should contain syntax valid inside
+--  a Lua table constructor (but not including this
+--  constructor itself).
+--
+-- The code in the string should use any
+-- any variables (including the usual global
+-- functions), as these are not available on runtime.
+-- It runs in a really empty environment.
+function mod.loadMapContent(data) 
+   return stripFirst(runInSandbox("return {" .. data .. "}"))
+end
+
+
+--------
 -- Loads a string as a lua expression
 -- (or an expression list, really).
+--
+-- The code in the string should use any
+-- any variables (including the usual global
+-- functions), as these are not available on runtime.
+-- It runs in a really empty environment.
 function mod.loadData(data)
-   local tab = {}
-   local f = assert(loadstring("return " .. data))
-   setfenv(f, tab)
-   return f()
+   return stripFirst(runInSandbox("return " .. data))
 end
 
 
