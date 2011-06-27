@@ -19,7 +19,7 @@ public class ZlibCompression {
         InputStream in = new FileInputStream(raw);
         OutputStream out =
             new DeflaterOutputStream(new FileOutputStream(compressed));
-        pipeInToOut(in, out);
+        shovelInToOut(in, out);
         in.close();
         out.close();
     }
@@ -33,7 +33,7 @@ public class ZlibCompression {
         InputStream in =
             new InflaterInputStream(new FileInputStream(compressed));
         OutputStream out = new FileOutputStream(raw);
-        pipeInToOut(in, out);
+        shovelInToOut(in, out);
         in.close();
         out.close();
     }
