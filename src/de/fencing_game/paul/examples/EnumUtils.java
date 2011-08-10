@@ -1,5 +1,6 @@
 package de.fencing_game.paul.examples;
 
+import java.io.PrintStream;
 import java.util.Map;
 import java.lang.reflect.*;
 
